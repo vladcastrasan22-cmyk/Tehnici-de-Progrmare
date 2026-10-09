@@ -1,0 +1,16 @@
+{
+    "url": "https://httpbin.org",
+    "status_code": 200,
+    "title": "httpbin.org",
+    "ip_address": "3.225.83.162",
+    "redirects": [],
+    "security_score": "0/5",
+    "certificate_days_left": 86,
+    "links": {
+        "internal": 3,
+        "external": 5
+    },
+    "disallowed_paths": [
+        "/deny"
+    ]
+}
