@@ -34,3 +34,38 @@ suid = suid_constatari("arsenal/privesc/start/suid.txt")
 mari = [c for c in suid if c["risc"] == "mare"]
 print(len(suid), "SUID,", len(mari), "cu risc mare")
 print(sorted(c["nume"] for c in mari))
+
+
+
+
+def sudo_constatari(cale):
+    out = []
+    for ln in citeste_linii(cale):
+        user, drept = ln.split(" : ", 1)   # despachetare in tuplu
+        # TODO: adauga {"user": user.strip(), "drept": drept.strip(),
+        #   "risc": "mare" daca "NOPASSWD" in drept, altfel "normal"}
+        out.append({"user": user.strip(), "drept": drept.strip(), "risc": "mare" if "NOPASSWD" in drept else "normal"})
+    return out
+ 
+def cron_constatari(cale):
+    # TODO: campuri = ln.split(); user = campuri[5];
+    #   comanda = " ".join(campuri[6:]); dict cu user si comanda
+    out = []
+    for ln in citeste_linii(cale):
+        campuri = ln.split()
+        if len(campuri) >= 7:
+            user = campuri[5]
+            comanda = " ".join(campuri[6:])
+            out.append({
+                "user": user,
+                "comanda": comanda,
+                "risc": "normal"
+            })
+    return out
+
+def enumereaza(d):
+    return {
+        "suid": suid_constatari(os.path.join(d, "suid.txt")),
+        "sudo": sudo_constatari(os.path.join(d, "sudo.txt")),
+        "cron": cron_constatari(os.path.join(d, "crontab.txt")),
+    }
