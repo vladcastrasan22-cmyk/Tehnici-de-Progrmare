@@ -27,7 +27,7 @@ def suid_constatari(cale):
     # TODO: pentru fiecare cale UNICA, in ordine sortata, un dict:
     #   {"cale": c, "nume": nume(c),
     #    "risc": "mare" daca nume(c) in GTFO, altfel "normal"}
-    return [{"cale": c, "nume": nume(c), "risc": "mare" if nume(c) in GTFO else "normal"} for c in sorted(cai, key=nume)]
+    return [{"cale": c, "nume": nume(c), "risc": "mare" if nume(c) in GTFO else "normal"} for c in sorted(set(cai))]
 
 
 suid = suid_constatari("arsenal/privesc/start/suid.txt")
