@@ -69,3 +69,29 @@ def enumereaza(d):
         "sudo": sudo_constatari(os.path.join(d, "sudo.txt")),
         "cron": cron_constatari(os.path.join(d, "crontab.txt")),
     }
+
+
+def main():
+    p = argparse.ArgumentParser()
+    p.add_argument("capturi")
+    p.add_argument("--json", action="store_true")
+    a = p.parse_args()
+    raport = enumereaza(a.capturi)
+    raport["utilizatori_implicati"] = sorted({
+        constatare["user"]
+        for categorie in ("sudo", "cron")
+        for constatare in raport[categorie]
+    })
+    if a.json:
+        print(json.dumps(raport, indent=2, ensure_ascii=False)); return
+    for categorie in ("suid", "sudo", "cron"):
+        lista = raport[categorie]
+        mari = [c for c in lista if c.get("risc") == "mare"]
+        print(f"{categorie}: {len(lista)} gasite, {len(mari)} cu risc mare")
+    print("utilizatori implicati:", ", ".join(raport["utilizatori_implicati"]))
+    with open("enum.json", "w", encoding="utf-8") as f:
+        json.dump(raport, f, indent=2, ensure_ascii=False)
+    print("Raport salvat in enum.json")
+    
+if __name__ == "__main__":
+    main()
