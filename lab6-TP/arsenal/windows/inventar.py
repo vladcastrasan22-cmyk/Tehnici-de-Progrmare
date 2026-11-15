@@ -36,3 +36,13 @@ print(p.e_suspect())
 e1 = Eveniment(4625, "warning", "Security", "administrator", "An account failed to log on")
 e2 = Eveniment(4624, "information", "Security", "ana", "An account was logged on")
 print(e1.e_suspect(), e2.e_suspect())
+
+
+def procese_din_json(cale):
+    with open(cale, encoding="utf-8") as f:
+        # TODO: intoarce [Proces(**d) for d in json.load(f)]
+        return [Proces(**d) for d in json.load(f)]
+ 
+procese = procese_din_json("arsenal/windows/start/procese.json")
+print("procese:", len(procese))
+print("suspecte:", sum(1 for p in procese if p.e_suspect()))
