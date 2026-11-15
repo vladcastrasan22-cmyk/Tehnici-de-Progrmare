@@ -46,3 +46,19 @@ def procese_din_json(cale):
 procese = procese_din_json("arsenal/windows/start/procese.json")
 print("procese:", len(procese))
 print("suspecte:", sum(1 for p in procese if p.e_suspect()))
+
+
+
+@dataclass
+class Inventar:
+    procese: list
+    @classmethod
+    def din_json(cls, cale):
+        with open(cale, encoding="utf-8") as f:
+            # TODO: return cls([Proces(**d) for d in json.load(f)])
+            return cls([Proces(**d) for d in json.load(f)])
+    def __len__(self):
+        return len(self.procese)
+ 
+inv = Inventar.din_json("arsenal/windows/start/procese.json")
+print("procese:", len(inv))
