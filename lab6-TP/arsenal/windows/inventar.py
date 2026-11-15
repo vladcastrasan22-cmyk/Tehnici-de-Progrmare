@@ -1,6 +1,8 @@
 from dataclasses import dataclass, asdict
 import json
 
+from arsenal.aparare.detector import main
+
 CAI_SUSPECTE = ("\\Temp\\", "\\Roaming\\")
 SUSPECTE_ID = {4625, 1102, 7045}
 
@@ -77,3 +79,35 @@ print("procese:", len(inv))
 for p in inv.suspecte():
     print(f"  [{p.pid}] {p.nume}  {p.cale}")
 print(inv.pe_user())
+
+def evenimente_din_json(cale):
+    with open(cale, encoding="utf-8") as f:
+        return [Eveniment(**d) for d in json.load(f)]
+
+def main():
+    import argparse
+    p = argparse.ArgumentParser()
+    p.add_argument("capturi")
+    p.add_argument("--json", action="store_true")
+    a = p.parse_args()
+    inv = Inventar.din_json(a.capturi + "/procese.json")
+    ev = evenimente_din_json(a.capturi + "/evenimente.json")
+    alarma = [e for e in ev if e.e_suspect()]
+    if a.json:
+        print(json.dumps({
+            "procese": [asdict(p) for p in inv.procese],
+            "suspecte": [asdict(p) for p in inv.suspecte()],
+            "evenimente": [asdict(e) for e in ev],
+            "alarma": [asdict(e) for e in alarma],
+        }, indent=2))
+    else:
+        suspecte = inv.suspecte()
+        print(f"Procese: {len(inv)} | suspecte: {len(suspecte)}")
+        for pr in suspecte:
+            print(f"  [{pr.pid}] {pr.nume}  ({pr.user})  {pr.cale}")
+        print(f"Evenimente: {len(ev)} | alarma: {len(alarma)}")
+        for e in alarma:
+            print(f"  {e.id} [{e.nivel}] {e.cont}: {e.mesaj}")
+
+if __name__ == "__main__":
+    main()
