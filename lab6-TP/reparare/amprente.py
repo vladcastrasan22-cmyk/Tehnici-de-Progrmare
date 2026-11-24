@@ -10,15 +10,15 @@ def tip(head):
     for semnatura, nume in MAGIC.items():
         if head.startswith(semnatura):
             return nume
-    return "necunoscut"          # greseala 1
+    return "necunoscut"          
 
 
 def amprenta_fisier(cale):
-    with open(cale) as f:             # greseala 2
+    with open(cale, "rb") as f:             # greseala 2
         date = f.read()
     return {"nume": os.path.basename(cale),
             "tip": tip(date[:8]),
-            "sha256": hashlib.sha256(date).hexdigest()[:8]}   # greseala 3
+            "sha256": hashlib.sha256(date).hexdigest()[:16]}   # greseala 3
 
 
 def scaneaza(folder):
